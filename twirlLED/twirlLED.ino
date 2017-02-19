@@ -32,7 +32,7 @@ void setup()
 
 void loop()
 {
-    shapeTwirl();
+    lineTwirl();
 }
 
 void lineTwirl()
@@ -51,18 +51,22 @@ void lineTwirl()
     //Serial.print((startIndex-1)%WRAP_NUM);
 }
 
-
 void shapeTwirl()
 {
     FastLED.clear();
     int bottom=6;
-    static int diamond[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM};
-    for(int i=0;i<sizeof(diamond);i++)
+    //static int diamond[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM};
+    //static int heart[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM-2,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2};
+    static int spaceInvader[]={(bottom)*WRAP_NUM,(bottom)*WRAP_NUM+1,(bottom)*WRAP_NUM+3,(bottom)*WRAP_NUM+4,(bottom+1)*WRAP_NUM-3,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+5,(bottom+1)*WRAP_NUM+7,(bottom+2)*WRAP_NUM-3,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2,(bottom+2)*WRAP_NUM+3,(bottom+2)*WRAP_NUM+4,(bottom+2)*WRAP_NUM+5,(bottom+2)*WRAP_NUM+7,
+    (bottom+3)*WRAP_NUM-3,(bottom+3)*WRAP_NUM-2,(bottom+3)*WRAP_NUM-1,(bottom+3)*WRAP_NUM,(bottom+3)*WRAP_NUM+1,(bottom+3)*WRAP_NUM+2,(bottom+3)*WRAP_NUM+3,(bottom+3)*WRAP_NUM+4,(bottom+3)*WRAP_NUM+5,(bottom+3)*WRAP_NUM+6,(bottom+3)*WRAP_NUM+7,(bottom+4)*WRAP_NUM-2,(bottom+4)*WRAP_NUM-1,(bottom+4)*WRAP_NUM+1,(bottom+4)*WRAP_NUM+2,(bottom+4)*WRAP_NUM+3,(bottom+4)*WRAP_NUM+5,(bottom+4)*WRAP_NUM+6,
+    (bottom+5)*WRAP_NUM-1,(bottom+4)*WRAP_NUM,(bottom+4)*WRAP_NUM+1,(bottom+4)*WRAP_NUM+2,(bottom+4)*WRAP_NUM+3,(bottom+4)*WRAP_NUM+4,(bottom+4)*WRAP_NUM+5,(bottom+5)*WRAP_NUM,(bottom+5)*WRAP_NUM+4,(bottom+6)*WRAP_NUM-1,(bottom+5)*WRAP_NUM+5};
+    for(int i=0;i<sizeof(spaceInvader);i++)
     {
-        leds[(diamond[i]+startIndex)]=CRGB::Red;
+        leds[(spaceInvader[i]+startIndex)]=CRGB::Red;
     }
     FastLED.show();
     delay(70);
 
     startIndex=(startIndex+1)%WRAP_NUM;
 }
+
