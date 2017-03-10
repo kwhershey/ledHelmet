@@ -1,72 +1,200 @@
 #include "FastLED.h"
 
 // fast led constants
-#define DATA_PIN    5       // change to your data pin
+#define LED_PIN    22       // change to your data pin
+#define BUTTON_PIN 30 
+#define 
 #define COLOR_ORDER GRB      // if colors are mismatched; change this
-#define NUM_LEDS    600       // change to the number of LEDs in your strip
+#define NUM_LEDS    900       // change to the number of LEDs in your strip
 #define BRIGHTNESS 32
 #define WRAP_NUM 55
-
-// change WS2812B to match your type of LED, if different
-// list of supported types is here:
-// https://github.com/FastLED/FastLED/wiki/Overview
 #define LED_TYPE    WS2812B
 
-// this creates an LED array to hold the values for each led in your strip
 CRGB leds[NUM_LEDS];
 int startIndex=0;
+int bottom=2;
+int buttonState=0;
+int lastButtonState=0;
+int pushCounter=0;
+int numPrograms=7;
+
+// matrix variables
+#define numParticles 15
+int lastRow[numParticles];
+int column[numParticles]; 
+
 
 void setup()
 {
   delay(3000);
   
-  // the wiki features a much more basic setup line:
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
-  //Serial.begin(9600);
-  //Serial.print("Good to go");
 
+  pinMode(BUTTON_PIN,INPUT);
   
+  for(int i=0;i<numParticles;i++){
+      column[i]=random(WRAP_NUM);
+      lastRow[i]=random(NUM_LEDS/WRAP_NUM);
+  }
+  //Serial.begin(9600);
+  //Serial.println("Hello");
   
 }
 
 void loop()
 {
-    lineTwirl();
+    if(pushCounter%numPrograms==0){
+        rainbowLineTwirl();
+    }
+    else if(pushCounter%numPrograms==1){
+        lineTwirl();
+    }
+    else if(pushCounter%numPrograms==2){
+        heartTwirl();
+    }
+    else if(pushCounter%numPrograms==3){
+        diamondTwirl();
+    }
+    else if(pushCounter%numPrograms==4){
+        matrix();
+    }
+    else if(pushCounter%numPrograms==5){
+        checkerboard();
+    }
+    else{
+        SITwirl();
+    }
+    buttonState=digitalRead(BUTTON_PIN);
+    if(buttonState != lastButtonState){
+       if(buttonState==HIGH){
+            pushCounter++;
+        }
+    }
+    lastButtonState=buttonState;
 }
 
-void lineTwirl()
+// rainbow line
+void rainbowLineTwirl()
 {
     FastLED.clear();
     for(int i=0;i<NUM_LEDS;i++){
         if(i%WRAP_NUM==startIndex){
-            leds[i]=CRGB::Red;
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
         }
     }
     FastLED.show();
     delay(30);
 
-    //delay(5);
     startIndex=(startIndex+1)%WRAP_NUM;
-    //Serial.print((startIndex-1)%WRAP_NUM);
 }
 
-void shapeTwirl()
+// single color line
+void lineTwirl()
 {
     FastLED.clear();
-    int bottom=6;
-    //static int diamond[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM};
-    //static int heart[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM-2,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2};
-    static int spaceInvader[]={(bottom)*WRAP_NUM,(bottom)*WRAP_NUM+1,(bottom)*WRAP_NUM+3,(bottom)*WRAP_NUM+4,(bottom+1)*WRAP_NUM-3,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+5,(bottom+1)*WRAP_NUM+7,(bottom+2)*WRAP_NUM-3,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2,(bottom+2)*WRAP_NUM+3,(bottom+2)*WRAP_NUM+4,(bottom+2)*WRAP_NUM+5,(bottom+2)*WRAP_NUM+7,
-    (bottom+3)*WRAP_NUM-3,(bottom+3)*WRAP_NUM-2,(bottom+3)*WRAP_NUM-1,(bottom+3)*WRAP_NUM,(bottom+3)*WRAP_NUM+1,(bottom+3)*WRAP_NUM+2,(bottom+3)*WRAP_NUM+3,(bottom+3)*WRAP_NUM+4,(bottom+3)*WRAP_NUM+5,(bottom+3)*WRAP_NUM+6,(bottom+3)*WRAP_NUM+7,(bottom+4)*WRAP_NUM-2,(bottom+4)*WRAP_NUM-1,(bottom+4)*WRAP_NUM+1,(bottom+4)*WRAP_NUM+2,(bottom+4)*WRAP_NUM+3,(bottom+4)*WRAP_NUM+5,(bottom+4)*WRAP_NUM+6,
-    (bottom+5)*WRAP_NUM-1,(bottom+4)*WRAP_NUM,(bottom+4)*WRAP_NUM+1,(bottom+4)*WRAP_NUM+2,(bottom+4)*WRAP_NUM+3,(bottom+4)*WRAP_NUM+4,(bottom+4)*WRAP_NUM+5,(bottom+5)*WRAP_NUM,(bottom+5)*WRAP_NUM+4,(bottom+6)*WRAP_NUM-1,(bottom+5)*WRAP_NUM+5};
-    for(int i=0;i<sizeof(spaceInvader);i++)
-    {
-        leds[(spaceInvader[i]+startIndex)]=CRGB::Red;
+    for(int i=0;i<NUM_LEDS;i++){
+        if(i%WRAP_NUM==startIndex){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
     }
     FastLED.show();
-    delay(70);
+    delay(30);
 
     startIndex=(startIndex+1)%WRAP_NUM;
 }
 
+//heart
+void heartTwirl()
+{
+    FastLED.clear();
+    static int heart[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM-2,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2,(bottom+3)*WRAP_NUM-1,(bottom+3)*WRAP_NUM+1};
+    for(int i=0;i<(sizeof(heart)/sizeof(int));i++)
+    {
+        leds[int(heart[i]+startIndex)]=CRGB::Red;
+    }
+    FastLED.show();
+    delay(30);
+
+    startIndex=(startIndex+1)%WRAP_NUM;
+}
+
+// diamond
+void diamondTwirl()
+{
+    FastLED.clear();
+    static int diamond[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM};
+    for(int i=0;i<(sizeof(diamond)/sizeof(int));i++)
+    {
+        leds[int(diamond[i]+startIndex)]=CRGB::Red;
+    }
+    FastLED.show();
+    delay(30);
+
+    startIndex=(startIndex+1)%WRAP_NUM;
+}
+
+
+
+// space invader 
+void SITwirl()
+{
+    FastLED.clear();
+    static int spaceInvader[]={(bottom)*WRAP_NUM,(bottom)*WRAP_NUM+1,(bottom)*WRAP_NUM+3,(bottom)*WRAP_NUM+4,(bottom+1)*WRAP_NUM-3,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM+5,(bottom+1)*WRAP_NUM+7,(bottom+2)*WRAP_NUM-3,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2,(bottom+2)*WRAP_NUM+3,(bottom+2)*WRAP_NUM+4,(bottom+2)*WRAP_NUM+5,(bottom+2)*WRAP_NUM+7,
+    (bottom+3)*WRAP_NUM-3,(bottom+3)*WRAP_NUM-2,(bottom+3)*WRAP_NUM-1,(bottom+3)*WRAP_NUM,(bottom+3)*WRAP_NUM+1,(bottom+3)*WRAP_NUM+2,(bottom+3)*WRAP_NUM+3,(bottom+3)*WRAP_NUM+4,(bottom+3)*WRAP_NUM+5,(bottom+3)*WRAP_NUM+6,(bottom+3)*WRAP_NUM+7,(bottom+4)*WRAP_NUM-2,(bottom+4)*WRAP_NUM-1,(bottom+4)*WRAP_NUM+1,(bottom+4)*WRAP_NUM+2,(bottom+4)*WRAP_NUM+3,(bottom+4)*WRAP_NUM+5,(bottom+4)*WRAP_NUM+6,
+    (bottom+5)*WRAP_NUM-1,(bottom+5)*WRAP_NUM,(bottom+5)*WRAP_NUM+1,(bottom+5)*WRAP_NUM+2,(bottom+5)*WRAP_NUM+3,(bottom+5)*WRAP_NUM+4,(bottom+5)*WRAP_NUM+5,(bottom+6)*WRAP_NUM,(bottom+6)*WRAP_NUM+4,(bottom+7)*WRAP_NUM-1,(bottom+7)*WRAP_NUM+5};
+    for(int i=0;i<(sizeof(spaceInvader)/sizeof(int));i++)
+    {
+        leds[int(spaceInvader[i]+startIndex)]=CRGB::Red;
+    }
+    FastLED.show();
+    delay(30);
+
+    startIndex=(startIndex+1)%WRAP_NUM;
+}
+
+
+void matrix()
+{
+    for(int i=0;i<NUM_LEDS;i++){
+        leds[i].fadeToBlackBy(128);
+    }
+    for(int i=0;i<numParticles;i++){
+
+        if(lastRow[i]<1){
+            column[i]=random(WRAP_NUM);
+            lastRow[i]=NUM_LEDS/WRAP_NUM;
+        }
+        if(lastRow[i]*WRAP_NUM+column[i]<NUM_LEDS){
+            //leds[lastRow[i]*WRAP_NUM+column[i]]=CRGB::Green;
+            leds[lastRow[i]*WRAP_NUM+column[i]].g=255;
+            lastRow[i]=lastRow[i]-1;
+        }
+        else {
+            lastRow[i]=lastRow[i]-1;
+        }
+
+    }
+    FastLED.show();
+    delay(50);
+}
+
+
+// checkerboard 
+void checkerboard()
+{
+    FastLED.clear();
+    for(int i=0;i<WRAP_NUM;i++){
+        for(int j=0;j<(NUM_LEDS/WRAP_NUM)+1;j++){
+            if(j*WRAP_NUM+i<NUM_LEDS){
+                if((i/4)%2==(startIndex+j/4)%2){
+                    leds[j*WRAP_NUM+i].setHSV(startIndex*255/WRAP_NUM,255,255);
+            }
+            }
+        }
+    }
+    FastLED.show();
+    delay(600);
+
+    startIndex=(startIndex+1)%WRAP_NUM;
+}
