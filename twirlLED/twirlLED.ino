@@ -1,9 +1,9 @@
 #include "FastLED.h"
 
 // fast led constants
-#define LED_PIN    22       // change to your data pin
+#define LED_PIN    26       // change to your data pin
 #define BUTTON_PIN 30 
-#define 
+//#define 
 #define COLOR_ORDER GRB      // if colors are mismatched; change this
 #define NUM_LEDS    900       // change to the number of LEDs in your strip
 #define BRIGHTNESS 32
