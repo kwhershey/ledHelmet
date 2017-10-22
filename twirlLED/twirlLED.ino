@@ -1,7 +1,7 @@
 #include "FastLED.h"
 
 // fast led constants
-#define LED_PIN    22       // change to your data pin
+#define LED_PIN    26       // change to your data pin
 #define BUTTON_PIN 30 
 #define COLOR_ORDER GRB      // if colors are mismatched; change this
 #define NUM_LEDS    900       // change to the number of LEDs in your strip
@@ -15,7 +15,7 @@ int bottom=5;
 int buttonState=0;
 int lastButtonState=0;
 int pushCounter=0;
-int numPrograms=7;
+int numPrograms=8;
 
 // matrix variables
 #define numParticles 15
@@ -60,6 +60,9 @@ void loop()
     }
     else if(pushCounter%numPrograms==5){
         checkerboard();
+    }
+    else if(pushCounter%numPrograms==6){
+        manTwirl();
     }
     else{
         SITwirl();
@@ -181,6 +184,26 @@ void diamondTwirl()
     for(int i=0;i<(sizeof(diamond)/sizeof(int));i++)
     {
         leds[int(diamond[i]+startIndex)]=CRGB::Red;
+    }
+    FastLED.show();
+    delay(30);
+
+    startIndex=(startIndex+1)%WRAP_NUM;
+}
+
+// running man
+void manTwirl()
+{
+    FastLED.clear();
+    static int man[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM+1, (bottom+2) *WRAP_NUM+1, (bottom+2) *WRAP_NUM+4, (bottom+3) *WRAP_NUM+2,(bottom+3) *WRAP_NUM+3,(bottom+3) *WRAP_NUM+4,(bottom+4) *WRAP_NUM+2,(bottom+5) *WRAP_NUM,(bottom+5) *WRAP_NUM+2,(bottom+6) *WRAP_NUM,(bottom+6) *WRAP_NUM+1,(bottom+6) *WRAP_NUM+2,(bottom+6) *WRAP_NUM+3,(bottom+6) *WRAP_NUM+4,(bottom+6) *WRAP_NUM+5,(bottom+7) *WRAP_NUM+2,(bottom+7) *WRAP_NUM+5,(bottom+8) *WRAP_NUM+1,(bottom+8) *WRAP_NUM+2,(bottom+9) *WRAP_NUM+1,(bottom+9) *WRAP_NUM+2,(bottom+9) *WRAP_NUM+3,(bottom+10) *WRAP_NUM+1,(bottom+10) *WRAP_NUM+2,(bottom+10) *WRAP_NUM+3, };
+    static int eye[]={(bottom+8) *WRAP_NUM+3};
+    for(int i=0;i<(sizeof(man)/sizeof(int));i++)
+    {
+        leds[int(man[i]+startIndex)]=CRGB::Green;
+    }
+    for(int i=0;i<(sizeof(eye)/sizeof(int));i++)
+    {
+        leds[int(eye[i]+startIndex)]=CRGB::Red;
     }
     FastLED.show();
     delay(30);
