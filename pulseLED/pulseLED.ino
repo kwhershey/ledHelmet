@@ -47,46 +47,48 @@ void loop()
 // checkerboard 
 void checkerboard()
 {
-    // Read ADC and center so +-512
-    sample = (float)analogRead(0)-503.f;
+    for(int i=0;i<50;i++){
+        // Read ADC and center so +-512
+        sample = (float)analogRead(0)-503.f;
 
-    // Filter only bass component
-    value = bassFilter(sample);
+        // Filter only bass component
+        value = bassFilter(sample);
 
-    // Take signal amplitude and filter
-    if(value < 0)value=-value;
-        envelope = envelopeFilter(value);
+        // Take signal amplitude and filter
+        if(value < 0)value=-value;
+            envelope = envelopeFilter(value);
 
-    // Every 200 samples (25hz) filter the envelope 
-    if(startIndex == 200) {
-        // Filter out repeating bass sounds 100 - 180bpm
-        beat = beatFilter(envelope);
+    }
 
-        // Threshold it based on potentiometer on AN1
-        thresh = 0.01f * (float)analogRead(0);
+    // Filter out repeating bass sounds 100 - 180bpm
+    beat = beatFilter(envelope);
 
-        // If we are above threshold, light up LED
-        if(beat > thresh){
-            for(int i=0;i<WRAP_NUM;i++){
-                for(int j=0;j<(NUM_LEDS/WRAP_NUM)+1;j++){
-                    if(j*WRAP_NUM+i<NUM_LEDS){
-                        if((i/4)%2==(j/4)%2){
-                            leds[j*WRAP_NUM+i].setHSV(startIndex*255/WRAP_NUM,255,255);
-                    }
-                    }
+    // Threshold it based on potentiometer on AN1
+    thresh = 0.005f * (float)analogRead(0);
+
+    // If we are above threshold, light up LED
+    if(beat > thresh){
+        for(int i=0;i<WRAP_NUM;i++){
+            for(int j=0;j<(NUM_LEDS/WRAP_NUM)+1;j++){
+                if(j*WRAP_NUM+i<NUM_LEDS){
+                    if((i/4)%2==(j/4)%2){
+                        leds[j*WRAP_NUM+i].setHSV(startIndex*255/WRAP_NUM,255,255);
+                }
                 }
             }
-        } 
-        else{ 
-            FastLED.clear();
         }
-        FastLED.show();
+    } 
+    else{ 
+        FastLED.clear();
     }
+    FastLED.show();
+
+
 
     // Consume excess clock cycles, to keep at 5000 hz
     for(unsigned long up = time+SAMPLEPERIODUS; time > 20 && time < up; time = micros());
 
-    startIndex=(startIndex+1)%201;
+    startIndex=(startIndex+1)%WRAP_NUM;
 }
 
 // 20 - 200hz Single Pole Bandpass IIR Filter

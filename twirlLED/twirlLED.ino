@@ -3,16 +3,15 @@
 // fast led constants
 #define LED_PIN    22       // change to your data pin
 #define BUTTON_PIN 30 
-#define 
 #define COLOR_ORDER GRB      // if colors are mismatched; change this
 #define NUM_LEDS    900       // change to the number of LEDs in your strip
 #define BRIGHTNESS 32
-#define WRAP_NUM 55
+#define WRAP_NUM 46 
 #define LED_TYPE    WS2812B
 
 CRGB leds[NUM_LEDS];
 int startIndex=0;
-int bottom=2;
+int bottom=5;
 int buttonState=0;
 int lastButtonState=0;
 int pushCounter=0;
@@ -82,6 +81,33 @@ void rainbowLineTwirl()
         if(i%WRAP_NUM==startIndex){
             leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
         }
+        else if(i%WRAP_NUM==(startIndex+1*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+2*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+3*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+4*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+5*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+6*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+7*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+8*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
+        else if(i%WRAP_NUM==(startIndex+9*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setHSV(startIndex*255/WRAP_NUM,255,255);
+        }
     }
     FastLED.show();
     delay(30);
@@ -97,6 +123,33 @@ void lineTwirl()
         if(i%WRAP_NUM==startIndex){
             leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
         }
+        else if(i%WRAP_NUM==(startIndex+1*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+2*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+3*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+4*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+5*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+6*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+7*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+8*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
+        else if(i%WRAP_NUM==(startIndex+9*WRAP_NUM/10)%WRAP_NUM){
+            leds[i].setRGB(0,abs(255-510*(float(startIndex)/WRAP_NUM)),255-abs(255-510*(float(startIndex)/WRAP_NUM)));
+        }
     }
     FastLED.show();
     delay(30);
@@ -109,6 +162,7 @@ void heartTwirl()
 {
     FastLED.clear();
     static int heart[]={bottom*WRAP_NUM,(bottom+1)*WRAP_NUM-1,(bottom+1)*WRAP_NUM,(bottom+1)*WRAP_NUM+1,(bottom+2)*WRAP_NUM,(bottom+2)*WRAP_NUM-1,(bottom+2)*WRAP_NUM-2,(bottom+2)*WRAP_NUM+1,(bottom+2)*WRAP_NUM+2,(bottom+3)*WRAP_NUM-1,(bottom+3)*WRAP_NUM+1};
+    int x = 0;
     for(int i=0;i<(sizeof(heart)/sizeof(int));i++)
     {
         leds[int(heart[i]+startIndex)]=CRGB::Red;
